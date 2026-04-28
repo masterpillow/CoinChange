@@ -3,42 +3,51 @@ import java.util.Arrays;
 public class CoinChange {
 
     /**
-     * Dynamic Programming coin change algorithm.
-     * Finds the minimum number of coins needed to make the given amount.
+     * DP Coin Change (Bottom-Up)
+     * Matches class pseudocode:
+     * min[0] = 0
+     * min[i] = min(min[i - D[j]] + 1)
      *
-     * dp[i] represents the minimum number of coins needed to make amount i.
-     * Use amount+1 as "infinity" — no valid solution needs more than amount coins.
-     *
-     * @param coins  array of coin denominations
-     * @param amount target amount
-     * @return minimum number of coins needed, or -1 if impossible
+     * @param D array of coin denominations
+     * @param n target amount
+     * @return minimum number of coins, or -1 if impossible
      */
-    public static int DPCoinChange(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
+    public static int DPCoinChange(int[] D, int n) {
 
-        // Fill with "infinity" sentinel value
-        Arrays.fill(dp, amount + 1);
-        dp[0] = 0;
+        int[] min = new int[n + 1];
 
-        for (int currentAmount = 1; currentAmount <= amount; currentAmount++) {
-            for (int coin : coins) {
-                if (coin <= currentAmount) {
-                    dp[currentAmount] = Math.min(
-                            dp[currentAmount],
-                            dp[currentAmount - coin] + 1
-                    );
+        // initialize
+        Arrays.fill(min, Integer.MAX_VALUE);
+        min[0] = 0;
+
+        // DP build
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < D.length; j++) {
+
+                if (i >= D[j] && min[i - D[j]] != Integer.MAX_VALUE) {
+                    int candidate = min[i - D[j]] + 1;
+
+                    if (candidate < min[i]) {
+                        min[i] = candidate;
+                    }
                 }
             }
         }
 
-        return dp[amount] > amount ? -1 : dp[amount];
+        // result
+        if (min[n] == Integer.MAX_VALUE) {
+            return -1;
+        }
+
+        return min[n];
     }
 
     public static void main(String[] args) {
-        int[] coins = {1, 5, 10, 25};
-        int amount = 63;
+        int[] D = {1, 5, 10, 22};
+        int n = 45;
 
-        int result = DPCoinChange(coins, amount);
-        System.out.println("Minimum coins needed: " + result);
+        int result = DPCoinChange(D, n);
+
+        System.out.println("Minimum coins: " + result);
     }
 }
