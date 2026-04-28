@@ -4,10 +4,8 @@ public class CoinChange {
 
     /**
      * DP Coin Change (Bottom-Up)
-     * Matches class pseudocode:
      * min[0] = 0
      * min[i] = min(min[i - D[j]] + 1)
-     *
      * @param D array of coin denominations
      * @param n target amount
      * @return minimum number of coins, or -1 if impossible
